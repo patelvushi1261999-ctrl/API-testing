@@ -1,0 +1,49 @@
+{
+  "Task1_FlipkartProduct": {
+    "productId": "P12345",
+    "name": "Smartphone XYZ",
+    "price": 14999,
+    "inStock": true,
+    "tags": ["electronics", "sale", "mobile"]
+  },
+
+  "Task2_SpotifyPlaylist": {
+    "playlistName": "My Workout Mix",
+    "description": "Energetic songs for gym sessions",
+    "songIds": ["S101", "S102", "S103", "S104"]
+  },
+
+  "Task3_MovieSearchExplanation": {
+    "pathParameter": "/movies/search",
+    "queryParameters": {
+      "genre": "action",
+      "year": "2023"
+    },
+    "difference": {
+      "path": "Identifies the resource (search endpoint).",
+      "query": "Provides filters or extra details for the resource."
+    }
+  },
+
+  "Task4_BookMyShowTicketRequest": {
+    "method": "POST",
+    "url": "/matches/12345/tickets",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer token123"
+    },
+    "body": {
+      "userId": "U56789",
+      "seatNumber": "A12"
+    }
+  },
+
+  "Task5_ZomatoReviewPayload": {
+    "restaurantId": "R98765",
+    "userId": "U56789",
+    "rating": 5,
+    "reviewText": "Amazing food and quick service!"
+  },
+
+  "Note": "One thing learned: JSON requires double quotes around all keys and string values."
+}
