@@ -1,0 +1,87 @@
+import requests
+
+# -------------------------------
+# Task 1: Food Delivery API (GET restaurants by city)
+# -------------------------------
+def task1_food_delivery():
+    print("\n--- Task 1 ---")
+    url = "https://jsonplaceholder.typicode.com/users"
+    params = {"city": "Delhi"}  # Example city parameter
+    response = requests.get(url, params=params)
+    print("Status:", response.status_code)
+    print("Response:", response.json())
+
+
+# -------------------------------
+# Task 2: Playlist Creation (simulate CSV-driven POST)
+# -------------------------------
+def task2_playlist_creation():
+    print("\n--- Task 2 ---")
+    url = "https://jsonplaceholder.typicode.com/posts"
+    playlists = [
+        {"playlistName": "Chill Vibes", "description": "Relaxing tracks for evening"},
+        {"playlistName": "Workout Pump", "description": "High energy songs"},
+        {"playlistName": "Road Trip", "description": "Fun travel playlist"}
+    ]
+    for playlist in playlists:
+        response = requests.post(url, json=playlist)
+        print("Created Playlist:", playlist["playlistName"], "-> Status:", response.status_code)
+
+
+# -------------------------------
+# Task 3: Data-Driven Login Test
+# -------------------------------
+def task3_login_test():
+    print("\n--- Task 3 ---")
+    url = "https://mock-movie-app.com/login"
+    credentials = [
+        {"username": "user1", "password": "pass123"},
+        {"username": "user2", "password": "wrongpass"},
+        {"username": "user3", "password": "secure456"}
+    ]
+    for cred in credentials:
+        response = requests.post(url, json=cred)
+        if response.status_code == 200:
+            print(f"Login succeeded for {cred['username']}")
+        else:
+            print(f"Login failed for {cred['username']} -> Status {response.status_code}")
+
+
+# -------------------------------
+# Task 4: Refactor with Environment Variables
+# -------------------------------
+def task4_product_details():
+    print("\n--- Task 4 ---")
+    baseUrl = "https://shopping-api.com"
+    productId = 101
+    url = f"{baseUrl}/products/{productId}"
+    response = requests.get(url)
+    print("Status:", response.status_code)
+    print("Product Details:", response.text)
+
+
+# -------------------------------
+# Task 5: JSON Data File Simulation
+# -------------------------------
+def task5_user_profiles():
+    print("\n--- Task 5 ---")
+    users = [
+        {"username": "alice123", "email": "alice@example.com", "phone": "9876543210"},
+        {"username": "bob456", "email": "bob@example.com", "phone": "9123456780"},
+        {"username": "charlie789", "email": "charlie@example.com", "phone": "9988776655"},
+        {"username": "diana321", "email": "diana@example.com", "phone": "9090909090"},
+        {"username": "edward654", "email": "edward@example.com", "phone": "9191919191"}
+    ]
+    for user in users:
+        print("User Profile:", user)
+
+
+# -------------------------------
+# Main Runner
+# -------------------------------
+if __name__ == "__main__":
+    task1_food_delivery()
+    task2_playlist_creation()
+    task3_login_test()
+    task4_product_details()
+    task5_user_profiles()
