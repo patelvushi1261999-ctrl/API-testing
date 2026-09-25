@@ -1,0 +1,103 @@
+import requests
+
+# -------------------------------
+# Task 1: CoinGecko Bitcoin Price
+# -------------------------------
+def task1_coingecko_price():
+    print("\n--- Task 1 ---")
+    url = "https://api.coingecko.com/api/v3/simple/price"
+    headers = {
+        "x-cg-api-key": "YOUR_API_KEY"   # Replace with your actual CoinGecko API key
+    }
+    params = {
+        "ids": "bitcoin",
+        "vs_currencies": "inr"
+    }
+    response = requests.get(url, headers=headers, params=params)
+    data = response.json()
+    print("Bitcoin Price in INR:", data.get("bitcoin", {}).get("inr"))
+
+
+# -------------------------------
+# Task 2: Spotify Profile
+# -------------------------------
+def task2_spotify_profile():
+    print("\n--- Task 2 ---")
+    token = "YOUR_SPOTIFY_BEARER_TOKEN"  # Replace with your actual token
+    url = "https://api.spotify.com/v1/me"
+    headers = {
+        "Authorization": f"Bearer {token}"
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        print("Spotify Profile:", response.json())
+    else:
+        print("Error:", response.status_code, response.text)
+
+
+# -------------------------------
+# Task 3: Zomato-style Favorites
+# -------------------------------
+def task3_zomato_favorites():
+    print("\n--- Task 3 ---")
+    url = "https://mock-zomato-api.com/user/favorites"
+
+    # Case 1: No API key
+    response_no_key = requests.get(url)
+    print("No Key Response:", response_no_key.status_code, response_no_key.text)
+
+    # Case 2: Invalid API key
+    headers_invalid = {"x-api-key": "INVALID_KEY"}
+    response_invalid = requests.get(url, headers=headers_invalid)
+    print("Invalid Key Response:", response_invalid.status_code, response_invalid.text)
+
+    # Case 3: Valid API key
+    headers_valid = {"x-api-key": "VALID_KEY"}  # Replace with actual valid key
+    response_valid = requests.get(url, headers=headers_valid)
+    print("Valid Key Response:", response_valid.status_code, response_valid.text)
+
+
+# -------------------------------
+# Task 4: BookMyShow Session Reuse
+# -------------------------------
+def task4_bookmyshow_session():
+    print("\n--- Task 4 ---")
+    token = "YOUR_BOOKMYSHOW_BEARER_TOKEN"  # Replace with actual token
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # Call /bookings
+    bookings_url = "https://mock-bookmyshow-api.com/bookings"
+    bookings_response = requests.get(bookings_url, headers=headers)
+    print("Bookings Response:", bookings_response.status_code, bookings_response.text)
+
+    # Call /profile
+    profile_url = "https://mock-bookmyshow-api.com/profile"
+    profile_response = requests.get(profile_url, headers=headers)
+    print("Profile Response:", profile_response.status_code, profile_response.text)
+
+
+# -------------------------------
+# Task 5: Protected Endpoint Test
+# -------------------------------
+def task5_protected_endpoint():
+    print("\n--- Task 5 ---")
+    token = "YOUR_BEARER_TOKEN"  # Replace with actual token
+    url = "https://mock-api.com/protected/resource"
+    headers = {"Authorization": f"Bearer {token}"}
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 401:
+        print("Error: Unauthorized access. Check your Bearer token.")
+    else:
+        print("Response:", response.status_code, response.json())
+
+
+# -------------------------------
+# Main Runner
+# -------------------------------
+if __name__ == "__main__":
+    task1_coingecko_price()
+    task2_spotify_profile()
+    task3_zomato_favorites()
+    task4_bookmyshow_session()
+    task5_protected_endpoint()
