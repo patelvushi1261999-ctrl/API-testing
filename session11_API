@@ -1,0 +1,88 @@
+import requests
+import logging
+import pytest
+
+# -------------------------------
+# Logging Configuration
+# -------------------------------
+# Default: INFO level (will later be changed to WARNING/ERROR for Task 4)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
+
+# -------------------------------
+# Task 1: Allure Reporting
+# -------------------------------
+# Install allure-pytest plugin:
+#   pip install allure-pytest
+# Run tests with:
+#   pytest --alluredir=reports/
+# Generate HTML report:
+#   allure serve reports/
+
+@pytest.mark.allure_label("orders")
+def test_create_order():
+    url = "https://jsonplaceholder.typicode.com/posts"
+    payload = {"title": "Food Order", "body": "Burger x2"}
+    logger.info(f"Sending POST request to {url} with payload {payload}")
+    response = requests.post(url, json=payload)
+    logger.info(f"Response status: {response.status_code}")
+    assert response.status_code == 201
+
+
+# -------------------------------
+# Task 2: Logging Requests/Responses
+# -------------------------------
+def test_get_order():
+    url = "https://jsonplaceholder.typicode.com/posts/1"
+    logger.info(f"Sending GET request to {url}")
+    response = requests.get(url)
+    logger.info(f"Response body: {response.text}")
+    assert response.status_code == 200
+
+
+# -------------------------------
+# Task 3: CI/CD Integration
+# -------------------------------
+# GitHub Actions workflow (save as .github/workflows/api-tests.yml):
+#
+# name: API Tests
+# on: [push]
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: Set up Python
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: '3.10'
+#       - name: Install dependencies
+#         run: pip install -r requirements.txt
+#       - name: Run tests with Allure
+#         run: pytest --alluredir=reports/
+#       - name: Generate Allure Report
+#         run: allure generate reports/ -o reports/html --clean
+#       - name: Upload Report Artifact
+#         uses: actions/upload-artifact@v3
+#         with:
+#           name: allure-report
+#           path: reports/html
+
+
+# -------------------------------
+# Task 4: Adjust Logging Level
+# -------------------------------
+def test_trigger_failure():
+    # Change logging level to WARNING/ERROR only
+    logger.setLevel(logging.WARNING)
+
+    url = "https://jsonplaceholder.typicode.com/invalidendpoint"
+    logger.info(f"Sending GET request to {url}")  # This won't show now
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        logger.error(f"Test failed! Status: {response.status_code}")
+    assert response.status_code == 200  # This will fail intentionally
