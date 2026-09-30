@@ -1,0 +1,103 @@
+// ===============================================
+// 1. Postman Collection (conceptual JSON requests)
+// ===============================================
+// Restaurants
+//   GET /restaurants → Positive: expect 200 and non-empty list
+//   GET /restaurants?city=InvalidCity → Negative: expect 200 and empty list
+//
+// Single Restaurant
+//   GET /restaurants/123 → Positive: expect 200 and correct details
+//   GET /restaurants/9999 → Negative: expect 404 Not Found
+//
+// Orders
+//   POST /orders (valid payload) → Positive: expect 201 Created
+//   POST /orders (missing items) → Negative: expect 400 Bad Request
+
+
+// ===============================================
+// 2. REST Assured (Java) - Flipkart Product Search
+// ===============================================
+import io.restassured.RestAssured;
+import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;
+import org.testng.annotations.Test;
+
+public class ApiTests {
+
+    @Test
+    public void testSearchWithResults() {
+        RestAssured.baseURI = "https://mock-flipkart-api.com";
+        given()
+            .queryParam("keyword", "laptop")
+        .when()
+            .get("/products/search")
+        .then()
+            .statusCode(200)
+            .body("products.size()", greaterThan(0));
+    }
+
+    @Test
+    public void testSearchNoResults() {
+        RestAssured.baseURI = "https://mock-flipkart-api.com";
+        given()
+            .queryParam("keyword", "xyznotfound")
+        .when()
+            .get("/products/search")
+        .then()
+            .statusCode(200)
+            .body("products.size()", equalTo(0));
+    }
+
+    // ===============================================
+    // 3. Authentication Test - Paytm-like App
+    // ===============================================
+    @Test
+    public void testInvalidLogin() {
+        RestAssured.baseURI = "https://mock-paytm-api.com";
+        given()
+            .header("Content-Type", "application/json")
+            .body("{\"username\":\"wrong\",\"password\":\"badpass\"}")
+        .when()
+            .post("/auth/login")
+        .then()
+            .statusCode(401)
+            .body("error", equalTo("Invalid credentials"));
+    }
+
+    // ===============================================
+    // 4. Refactor Common Setup
+    // ===============================================
+    // Instead of repeating baseURI and headers, extract them:
+    @BeforeClass
+    public void setup() {
+        RestAssured.baseURI = "https://mock-api.com";
+        RestAssured.requestSpecification = given()
+            .header("Content-Type", "application/json");
+    }
+
+
+
+# ===============================================
+# 5. AI-Generated Test - BookMyShow Sold-Out Show
+# ===============================================
+import requests
+
+def test_sold_out_booking():
+    base_url = "https://mock-bookmyshow-api.com"
+    movie_id = "inception123"
+    show_id = "show789"  # sold-out show
+
+    resp = requests.post(f"{base_url}/book", json={
+        "movieId": movie_id,
+        "showId": show_id,
+        "seats": ["A1"]
+    })
+
+    assert resp.status_code == 400
+    assert resp.json()["error"] == "Show is sold out"
+
+# Learned: Copilot suggested checking both status code and error message.
+# This reinforced that good API tests validate not just codes but also
+# the response body content for meaningful errors.
+
+}
