@@ -1,0 +1,132 @@
+// ===============================
+// 1. Postman (conceptual JSON requests)
+// ===============================
+// POST - Create Order
+/*
+POST https://mock-food-api.com/orders
+Body:
+{
+  "restaurantId": "123",
+  "items": [
+    { "productId": "burger01", "quantity": 2 }
+  ],
+  "address": "Gotri, Vadodara"
+}
+*/
+
+// GET - Retrieve Order
+/*
+GET https://mock-food-api.com/orders/{{orderId}}
+*/
+
+
+// ===============================
+// 2. REST Assured (Java) - Flipkart-style purchase
+// ===============================
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import static io.restassured.RestAssured.*;
+
+public class FlipkartFlow {
+    public static void main(String[] args) {
+        RestAssured.baseURI = "https://mock-flipkart-api.com";
+
+        // Step 1: Add product to cart
+        Response addCart = given()
+            .header("Content-Type", "application/json")
+            .body("{\"productId\":\"p123\",\"quantity\":1}")
+        .when()
+            .post("/cart")
+        .then().extract().response();
+
+        String cartId = addCart.jsonPath().getString("cartId");
+
+        // Step 2: Update cart quantity
+        given()
+            .header("Content-Type", "application/json")
+            .body("{\"cartId\":\"" + cartId + "\",\"quantity\":2}")
+        .when()
+            .put("/cart/update")
+        .then().statusCode(200);
+
+        // Step 3: Place order
+        given()
+            .header("Content-Type", "application/json")
+            .body("{\"cartId\":\"" + cartId + "\"}")
+        .when()
+            .post("/order")
+        .then().statusCode(201);
+    }
+}
+
+
+// ===============================
+// 3. Python Requests - BookMyShow flow
+// ===============================
+import requests
+
+base_url = "https://mock-bookmyshow-api.com"
+
+# Step 1: Search movie
+resp = requests.get(f"{base_url}/movies?name=Inception")
+movie_id = resp.json()[0]["id"]
+
+# Step 2: Select seats
+resp2 = requests.post(f"{base_url}/seats", json={
+    "movieId": movie_id,
+    "seats": ["A1", "A2"]
+})
+booking_id = resp2.json()["bookingId"]
+
+# Step 3: Confirm booking
+resp3 = requests.post(f"{base_url}/confirm", json={
+    "bookingId": booking_id
+})
+print(resp3.json())
+
+
+// ===============================
+// 4. Postman Debugging - Zomato collection
+// ===============================
+// In the Search request Tests tab:
+/*
+let data = pm.response.json();
+pm.environment.set("restaurantId", data[0].id);
+*/
+
+// In the Reservation request body:
+/*
+{
+  "restaurantId": "{{restaurantId}}",
+  "userId": "u123",
+  "time": "2026-09-30T19:00:00"
+}
+*/
+
+
+// ===============================
+// 5. Python Requests - Music Streaming App (Spotify-style)
+// ===============================
+import requests
+
+base_url = "https://mock-music-api.com"
+
+# Step 1: Login
+resp = requests.post(f"{base_url}/login", json={"username":"vrushi","password":"pass123"})
+token = resp.json()["token"]
+
+headers = {"Authorization": f"Bearer {token}"}
+
+# Step 2: Fetch playlists
+resp2 = requests.get(f"{base_url}/playlists", headers=headers)
+playlist_id = resp2.json()[0]["id"]
+
+# Step 3: Add song to playlist
+resp3 = requests.post(f"{base_url}/playlists/{playlist_id}/songs", headers=headers, json={
+    "songId": "song789"
+})
+print(resp3.json())
+
+# Improvement idea: Instead of hardcoding "song789", fetch songs dynamically:
+# songs = requests.get(f"{base_url}/songs", headers=headers).json()
+# pick one by genre or user preference, then add to playlist.
